@@ -1,7 +1,7 @@
 import re
 import random as rand
 
-class Uwuify:
+class uwuipy:
     
     __uwuPattern = [['[rl]', 'w'], 
                 ['[RL]', 'W'], 
@@ -141,7 +141,7 @@ class Uwuify:
         self.actionChance = actionChance
         self.exclamationChance = exclamationChance
 
-    def Uwuify(self, msg):
+    def uwuify(self, msg):
         msg = self.__UwuifyWords(msg)
         msg = self.__UwuifySpaces(msg, self.seed, self.stutterChance, self.faceChance, self.actionChance)
         msg = self.__UwuifyExclamations(msg, self.seed, self.exclamationChance)
