@@ -134,7 +134,19 @@ class uwuipy:
         # return the joined string
         return ' '.join(words)
 
-    def __init__(self, seed = None, stutterChance = 0.3, faceChance = 0.2, actionChance = 0.1, exclamationChance = 1):
+    def __init__(self, seed : int = None, stutterChance : float = 0.3, faceChance : float = 0.2, 
+                 actionChance : float = 0.1, exclamationChance : float = 1):
+        
+        # input protection to make sure the user stays within allowed parameters
+        if stutterChance > 1.0 or stutterChance < 0.0:
+            raise Exception("Invalid input value for stutterChance, supported range is 0-1.0")
+        if faceChance > 1.0 or faceChance < 0.0:
+            raise Exception("Invalid input value for faceChance, supported range is 0-1.0") 
+        if actionChance > 1.0 or actionChance < 0.0:
+            raise Exception("Invalid input value for actionChance, supported range is 0-1.0") 
+        if exclamationChance > 1.0 or exclamationChance < 0.0:
+            raise Exception("Invalid input value for exclamationChance, supported range is 0-1.0") 
+         
         self.seed = seed
         self.stutterChance = stutterChance
         self.faceChance = faceChance
