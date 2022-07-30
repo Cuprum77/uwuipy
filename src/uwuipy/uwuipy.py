@@ -71,7 +71,7 @@ class uwuipy:
         # return the joined string
         return ' '.join(words)
 
-    def __UwuifySpaces(self, _msg, _seed, _stutterChance, _faceChance, _actionChance):
+    def __UwuifySpaces(self, _msg, _stutterChance, _faceChance, _actionChance):
         # split the message into words
         words = _msg.split(' ')
         
@@ -81,15 +81,12 @@ class uwuipy:
             if not word:
                 continue
             
-            # create a random float
-            rand.seed(_seed)
-            randNum = rand.random()
             # get the character case for the second letter in the word
             NextCharCase = word[1].isupper() if len(word) > 1 else False
             _word = ''
             
             # if we are to add stutters, do it
-            if randNum <= _stutterChance:
+            if rand.random() <= _stutterChance:
                 # creates a random number between 1 and 2
                 stutterLen = rand.randrange(1, 3)
                 # add as many characters to the stutter as stutterlen dictates
@@ -100,11 +97,11 @@ class uwuipy:
                 _word += (word[0].upper() if NextCharCase else word[0].lower()) + word[1:]
                 
             # if we are to add a face, do it
-            if randNum <= _faceChance:
+            if rand.random() <= _faceChance:
                 _word = (_word if _word else word) + ' ' + self.__faces[rand.randrange(0, len(self.__faces))]
                 
             #if we are to add an action, do it
-            if randNum <= _actionChance:
+            if rand.random() <= _actionChance:
                 _word = (_word if _word else word) + ' ' + self.__actions[rand.randrange(0, len(self.__actions))]
                 
             # replace the word in the array with the modified if it exists, if not add the original word back
@@ -112,10 +109,9 @@ class uwuipy:
             
         return ' '.join(words)
             
-    def __UwuifyExclamations(self, _msg, _seed, _exclamationChance):
+    def __UwuifyExclamations(self, _msg, _exclamationChance):
         # split the message into words
         words = _msg.split(' ')
-        rand.seed(_seed)
         
         # itterate over each individual word
         for idx, word in enumerate(words):
@@ -147,7 +143,7 @@ class uwuipy:
         if exclamationChance > 1.0 or exclamationChance < 0.0:
             raise Exception("Invalid input value for exclamationChance, supported range is 0-1.0") 
          
-        self.seed = seed
+        rand.seed(seed)
         self.stutterChance = stutterChance
         self.faceChance = faceChance
         self.actionChance = actionChance
@@ -155,7 +151,7 @@ class uwuipy:
 
     def uwuify(self, msg):
         msg = self.__UwuifyWords(msg)
-        msg = self.__UwuifySpaces(msg, self.seed, self.stutterChance, self.faceChance, self.actionChance)
-        msg = self.__UwuifyExclamations(msg, self.seed, self.exclamationChance)
+        msg = self.__UwuifySpaces(msg, self.stutterChance, self.faceChance, self.actionChance)
+        msg = self.__UwuifyExclamations(msg, self.exclamationChance)
         
         return msg
