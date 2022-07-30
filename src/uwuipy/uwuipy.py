@@ -130,8 +130,8 @@ class uwuipy:
         # return the joined string
         return ' '.join(words)
 
-    def __init__(self, seed : int = None, stutterChance : float = 0.3, faceChance : float = 0.2, 
-                 actionChance : float = 0.1, exclamationChance : float = 1):
+    def __init__(self, seed : int = None, stutterChance : float = 0.1, faceChance : float = 0.05, 
+                 actionChance : float = 0.075, exclamationChance : float = 1):
         
         # input protection to make sure the user stays within allowed parameters
         if stutterChance > 1.0 or stutterChance < 0.0:
