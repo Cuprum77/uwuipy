@@ -1,7 +1,7 @@
 import re
 import random as rand
 
-class uwu:
+class Uwuify:
     
     __uwuPattern = [['[rl]', 'w'], 
                 ['[RL]', 'W'], 
@@ -131,9 +131,16 @@ class uwu:
         # return the joined string
         return ' '.join(words)
 
-    def Uwuify(self, msg, seed = None, stutterChance = 0.3, faceChance = 0.2, actionChance = 0.1, exclamationChance = 1):
+    def __init__(self, seed = None, stutterChance = 0.3, faceChance = 0.2, actionChance = 0.1, exclamationChance = 1):
+        self.seed = seed
+        self.stutterChance = stutterChance
+        self.faceChance = faceChance
+        self.actionChance = actionChance
+        self.exclamationChance = exclamationChance
+
+    def Uwuify(self, msg):
         msg = self.__UwuifyWords(msg)
-        msg = self.__UwuifySpaces(msg, seed, stutterChance, faceChance, actionChance)
-        msg = self.__UwuifyExclamations(msg, seed, exclamationChance)
+        msg = self.__UwuifySpaces(msg, self.seed, self.stutterChance, self.faceChance, self.actionChance)
+        msg = self.__UwuifyExclamations(msg, self.seed, self.exclamationChance)
         
         return msg
