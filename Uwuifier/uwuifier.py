@@ -11,37 +11,37 @@ class Uwuify:
                 ['ove', 'uv']]
 
     __actions = ['***blushes***',
-            '***whispers to self***',
-            '***cries***',
-            '***screams***',
-                '***sweats***',
-                '***twerks***',
-                '***runs away***',
-                '***screeches***',
-                '***walks away***',
-                '***sees bulge***',
-                '***looks at you***',
-                '***notices buldge***',
-                '***starts twerking***',
-                '***huggles tightly***',
-                '***boops your nose***']
+                 '***whispers to self***',
+                 '***cries***',
+                 '***screams***',
+                 '***sweats***',
+                 '***twerks***',
+                 '***runs away***',
+                 '***screeches***',
+                 '***walks away***',
+                 '***sees bulge***',
+                 '***looks at you***',
+                 '***notices buldge***',
+                 '***starts twerking***',
+                 '***huggles tightly***',
+                 '***boops your nose***']
 
     __exclamations = ['!?',
-                    '?!!',
-                    '?!?1',
-                    '!!11',
-                    '?!?!'] 
+                      '?!!',
+                      '?!?1',
+                      '!!11',
+                      '?!?!'] 
 
     __faces = ["(・\`ω\´・)",
-            ";;w;;",
-            "OwO",
-            "UwU",
-            "\>w\<",
-            "^w^",
-            "ÚwÚ",
-            "^-^",
-            ":3",
-            "x3"]
+               ";;w;;",
+               "OwO",
+               "UwU",
+               "\>w\<",
+               "^w^",
+               "ÚwÚ",
+               "^-^",
+               ":3",
+               "x3"]
 
     def __UwuifyWords(self, _msg):
         # split the message into words
@@ -53,6 +53,9 @@ class Uwuify:
         for idx, word in enumerate(words):
             # skip empty entries
             if not word:
+                continue
+            # skip URLs
+            if re.search('((http:|https:)//[^ \<]*[^ \<\.])', word):
                 continue
             # skip pings
             if word[0] == '@':
