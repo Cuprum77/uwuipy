@@ -1,5 +1,5 @@
 # uwuipy
-An advacned uwuifier for python.
+An advanced uwuifier for python.
 ## Install
 To install just use PyPI `pip install uwuipy`
 ## Usage
@@ -17,14 +17,14 @@ The constructor accepts several optional parameters:
 * actionchance
 * exclamationchance
 
-the seed sets the rng seed for the random events, and the values for the paramers (range is between 0 and 1.0) controll the probablity of them occuring.
+the seed sets the rng seed for the random events, and the values for the parameters (range is between 0 and 1.0) control the probability of them occuring.
 ```python
 from uwuipy import uwuipy
 
 uwu = uwuipy(None, 0.3, 0.3, 0.3, 1)
 print(uwu.uwuify(input()))
 ```
-you can use an integer seed (for example the timestamp when a messag was posted to give it a unique uwuify)
+you can use an integer seed (for example the timestamp when a message was posted to give it a unique uwuify)
 ```python
 from datetime import datetime
 from uwuipy import uwuipy
