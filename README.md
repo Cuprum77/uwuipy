@@ -24,7 +24,12 @@ from uwuipy import uwuipy
 uwu = uwuipy(None, 0.3, 0.3, 0.3, 1)
 print(uwu.uwuify(input()))
 ```
-you can use an integer seed (for example the timestamp when a message was posted to give it a unique uwuify)
+Usage of the above example:
+```
+The quick brown fox jumps over the lazy dog
+The quick b-b-b-bwown (・\`ω\´・) ***screeches*** fox jumps uvw t-t-t-the OwO wazy dog
+```
+You can use an integer seed (for example the timestamp when a message was posted to give it a unique uwuify)
 ```python
 from datetime import datetime
 from uwuipy import uwuipy
