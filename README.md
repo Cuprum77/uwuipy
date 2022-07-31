@@ -38,4 +38,4 @@ as you can see we only use one method `uwuify()` it accepts a string and returns
 ## Contributing and Licence
 Feel free contribute to the [github repo](https://github.com/Cuprum77/uwuipy) of the project.
 
-Licenced under [MIT](./LICENSE)
+Licenced under [MIT](https://github.com/Cuprum77/uwuipy/blob/main/LICENSE)
