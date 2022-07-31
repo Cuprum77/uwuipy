@@ -1,53 +1,81 @@
 import re
 import random as rand
 
+
 class uwuipy:
     
-    __uwuPattern = [['[rl]', 'w'], 
-                ['[RL]', 'W'], 
-                ['n([aeiou])', 'ny\g<1>'],
-                ['N([aeiou])', 'Ny\g<1>'],
-                ['N([AEIOU])', 'NY\g<1>'],
-                ['ove', 'uv']]
+    __uwu_pattern = [
+        (r'[rl]', 'w'),
+        (r'[RL]', 'W'),
+        (r'n([aeiou])', 'ny\g<1>'),
+        (r'N([aeiou])', 'Ny\g<1>'),
+        (r'N([AEIOU])', 'NY\g<1>'),
+        (r'ove', 'uv'),
+    ]
 
-    __actions = ['***blushes***',
-                 '***whispers to self***',
-                 '***cries***',
-                 '***screams***',
-                 '***sweats***',
-                 '***twerks***',
-                 '***runs away***',
-                 '***screeches***',
-                 '***walks away***',
-                 '***sees bulge***',
-                 '***looks at you***',
-                 '***notices buldge***',
-                 '***starts twerking***',
-                 '***huggles tightly***',
-                 '***boops your nose***']
+    __actions = [
+        '***blushes***',
+        '***whispers to self***',
+        '***cries***',
+        '***screams***',
+        '***sweats***',
+        '***twerks***',
+        '***runs away***',
+        '***screeches***',
+        '***walks away***',
+        '***sees bulge***',
+        '***looks at you***',
+        '***notices buldge***',
+        '***starts twerking***',
+        '***huggles tightly***',
+        '***boops your nose***',
+    ]
 
-    __exclamations = ['!?',
-                      '?!!',
-                      '?!?1',
-                      '!!11',
-                      '?!?!'] 
+    __exclamations = [
+        '!?',
+        '?!!',
+        '?!?1',
+        '!!11',
+        '?!?!',
+    ]
 
-    __faces = ["(・\`ω\´・)",
-               ";;w;;",
-               "OwO",
-               "UwU",
-               "\>w\<",
-               "^w^",
-               "ÚwÚ",
-               "^-^",
-               ":3",
-               "x3"]
+    __faces = [
+        "(・\`ω\´・)",
+        ";;w;;",
+        "OwO",
+        "UwU",
+        "\>w\<",
+        "^w^",
+        "ÚwÚ",
+        "^-^",
+        ":3",
+        "x3",
+    ]
 
-    def __UwuifyWords(self, _msg):
+    def __init__(self, seed: int = None, stutter_chance: float = 0.1, face_chance: float = 0.05,
+                 action_chance: float = 0.075, exclamation_chance: float = 1):
+
+        # input protection to make sure the user stays within allowed parameters
+        if not 0.0 <= stutter_chance <= 1.0:
+            raise ValueError("Invalid input value for stutterChance, supported range is 0-1.0")
+        elif not 0.0 <= face_chance <= 1.0:
+            raise ValueError("Invalid input value for faceChance, supported range is 0-1.0")
+        elif not 0.0 <= action_chance <= 1.0:
+            raise ValueError("Invalid input value for actionChance, supported range is 0-1.0")
+        elif not 0.0 <= exclamation_chance <= 1.0:
+            raise ValueError("Invalid input value for exclamationChance, supported range is 0-1.0")
+
+        rand.seed(seed)
+        self.stutter_chance = stutter_chance
+        self.face_chance = face_chance
+        self.action_chance = action_chance
+        self.exclamation_chance = exclamation_chance
+
+    def __uwuify_words(self, _msg):
         # split the message into words
         words = _msg.split(' ')
         
-        # itterate over each individual word
+        # iterate over each individual word
         # sure you could regex the entire thing, but then you lose
         # the ability to ignore certain cases, like pings and urls
         for idx, word in enumerate(words):
@@ -55,103 +83,84 @@ class uwuipy:
             if not word:
                 continue
             # skip URLs
-            if re.search('((http:|https:)//[^ \<]*[^ \<\.])', word):
+            if re.search(r'((http:|https:)//[^ \<]*[^ \<\.])', word):
                 continue
             # skip pings
             if word[0] == '@':
                 continue
             # for each pattern in the array
-            for pattern in self.__uwuPattern:
+            for pattern, substitution in self.__uwu_pattern:
                 # attempt to use the pattern on the word
-                word = re.sub(pattern[0], pattern[1], word)
+                word = re.sub(pattern, substitution, word)
             
             # add the modified word to the original words array
             words[idx] = word
-            
+
         # return the joined string
         return ' '.join(words)
 
-    def __UwuifySpaces(self, _msg, _stutterChance, _faceChance, _actionChance):
+    def __uwuify_spaces(self, _msg, _stutter_chance, _face_chance, _action_chance):
         # split the message into words
         words = _msg.split(' ')
-        
-        # itterate over each individual word
+
+        # iterate over each individual word
         for idx, word in enumerate(words):
             # skip empty entries
             if not word:
                 continue
             
             # get the character case for the second letter in the word
-            NextCharCase = word[1].isupper() if len(word) > 1 else False
+            next_char_case = word[1].isupper() if len(word) > 1 else False
             _word = ''
             
             # if we are to add stutters, do it
-            if rand.random() <= _stutterChance:
+            if rand.random() <= _stutter_chance:
                 # creates a random number between 1 and 2
-                stutterLen = rand.randrange(1, 3)
-                # add as many characters to the stutter as stutterlen dictates
-                for j in range(stutterLen + 1):
-                    _word += (word[0] if j == 0 else (word[0].upper() if NextCharCase else word[0].lower())) + "-"
+                stutter_len = rand.randrange(1, 3)
+                # add as many characters to the stutter as stutter_len dictates
+                for j in range(stutter_len + 1):
+                    _word += (word[0] if j == 0 else (word[0].upper() if next_char_case else word[0].lower())) + "-"
                     
                 # add in the whole word, but make sure the case matches the next rest of the word
-                _word += (word[0].upper() if NextCharCase else word[0].lower()) + word[1:]
+                _word += (word[0].upper() if next_char_case else word[0].lower()) + word[1:]
                 
             # if we are to add a face, do it
-            if rand.random() <= _faceChance:
-                _word = (_word if _word else word) + ' ' + self.__faces[rand.randrange(0, len(self.__faces))]
+            if rand.random() <= _face_chance:
+                _word = (_word or word) + ' ' + self.__faces[rand.randrange(0, len(self.__faces))]
                 
-            #if we are to add an action, do it
-            if rand.random() <= _actionChance:
-                _word = (_word if _word else word) + ' ' + self.__actions[rand.randrange(0, len(self.__actions))]
+            # if we are to add an action, do it
+            if rand.random() <= _action_chance:
+                _word = (_word or word) + ' ' + self.__actions[rand.randrange(0, len(self.__actions))]
                 
             # replace the word in the array with the modified if it exists, if not add the original word back
-            words[idx] = (_word if _word else word)
-            
+            words[idx] = (_word or word)
+
         return ' '.join(words)
             
-    def __UwuifyExclamations(self, _msg, _exclamationChance):
+    def __uwuify_exclamations(self, _msg, _exclamation_chance):
         # split the message into words
         words = _msg.split(' ')
         
-        # itterate over each individual word
+        # iterate over each individual word
         for idx, word in enumerate(words):
             # skip empty entries
             if not word:
                 continue
             # skip if an exclamation is not present or the random number is greater than the chance
-            if (not re.search('[?!]+$', word)) or rand.random() > _exclamationChance:
+            if (not re.search(r'[?!]+$', word)) or rand.random() > _exclamation_chance:
                 continue
             
             # strip the exclamation from the word, add new exclamations and return it to the words array
             index = rand.randrange(0, len(self.__exclamations))
-            word = re.sub('[?!]+$', '', word) + self.__exclamations[index]
+            word = re.sub(r'[?!]+$', '', word) + self.__exclamations[index]
             words[idx] = word
         
         # return the joined string
         return ' '.join(words)
 
-    def __init__(self, seed : int = None, stutterChance : float = 0.1, faceChance : float = 0.05, 
-                 actionChance : float = 0.075, exclamationChance : float = 1):
-        
-        # input protection to make sure the user stays within allowed parameters
-        if stutterChance > 1.0 or stutterChance < 0.0:
-            raise Exception("Invalid input value for stutterChance, supported range is 0-1.0")
-        if faceChance > 1.0 or faceChance < 0.0:
-            raise Exception("Invalid input value for faceChance, supported range is 0-1.0") 
-        if actionChance > 1.0 or actionChance < 0.0:
-            raise Exception("Invalid input value for actionChance, supported range is 0-1.0") 
-        if exclamationChance > 1.0 or exclamationChance < 0.0:
-            raise Exception("Invalid input value for exclamationChance, supported range is 0-1.0") 
-         
-        rand.seed(seed)
-        self.stutterChance = stutterChance
-        self.faceChance = faceChance
-        self.actionChance = actionChance
-        self.exclamationChance = exclamationChance
-
     def uwuify(self, msg):
-        msg = self.__UwuifyWords(msg)
-        msg = self.__UwuifySpaces(msg, self.stutterChance, self.faceChance, self.actionChance)
-        msg = self.__UwuifyExclamations(msg, self.exclamationChance)
-        
+        msg = self.__uwuify_words(msg)
+        msg = self.__uwuify_spaces(msg, self.stutter_chance, self.face_chance, self.action_chance)
+        msg = self.__uwuify_exclamations(msg, self.exclamation_chance)
+
         return msg
