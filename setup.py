@@ -6,7 +6,7 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="uwuipy",
-    version="0.1.2",
+    version="0.1.3",
     author="Cuprum77",
     description="Allows the easy implementation of uwuifying words for applications like Discord bots and websites",
     long_description=long_description,
