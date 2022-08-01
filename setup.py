@@ -14,4 +14,5 @@ setup(
     url="https://github.com/Cuprum77/uwuipy",
     package_dir={"": "src"},
     packages=find_packages(where="src")
+    license="MIT"
 )
