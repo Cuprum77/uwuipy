@@ -3,3 +3,4 @@ src/uwuipy.egg-info/
 dist/
 build/
 uwuipy.egg-info/
+.idea
