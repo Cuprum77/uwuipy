@@ -1,9 +1,29 @@
+
 # uwuipy
 An advanced uwuifier for python.
 ## Install
 To install just use PyPI `pip install uwuipy`
 ## Usage
-Basic usage for uwuifying user input.
+Usage from CLI:
+```bash
+python3 -m uwuipy The quick brown fox jumps over the lazy dog
+The quick b-b-b-bwown (・\`ω\´・) ***screeches*** fox jumps uvw t-t-t-the OwO wazy dog
+```
+
+It can also be used as a REPL:
+```bash
+python3 -m uwuipy 
+>>> The quick brown fox jumps over the lazy dog
+The quick b-b-b-bwown (・\`ω\´・) ***screeches*** fox jumps uvw t-t-t-the OwO wazy dog
+>>> ^D
+```
+
+For explanations of the CLI flags please run
+```bash
+python3 -m uwuipy --help
+```
+
+Basic usage as a library for uwuifying user input:
 ```python
 from uwuipy import uwuipy
 
