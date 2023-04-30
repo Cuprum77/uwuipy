@@ -1,5 +1,5 @@
-src/uwuipy/__pycache__
-src/uwuipy.egg-info/
+uwuipy/__pycache__
+uwuipy.egg-info/
 dist/
 build/
 uwuipy.egg-info/

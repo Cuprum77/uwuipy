@@ -1,6 +1,5 @@
 from uwuipy import uwuipy
 from os import getenv
-import readline
 import argparse
 
 
