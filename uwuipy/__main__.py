@@ -3,6 +3,13 @@ from os import getenv
 import argparse
 
 
+try:
+    import readline
+
+except:
+    pass
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="uwuipy",
