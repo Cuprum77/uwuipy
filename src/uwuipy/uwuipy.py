@@ -11,6 +11,7 @@ class uwuipy:
         (r'N([aeiou])', 'Ny\g<1>'),
         (r'N([AEIOU])', 'NY\g<1>'),
         (r'ove', 'uv'),
+        (r'pog', 'poggies'),
     ]
 
     __actions = [
@@ -37,7 +38,9 @@ class uwuipy:
         '***glomps and huggles***',
         '***glomps***',
         '***looks around suspiciously***',
-        '***smirks smuggly***'
+        '***smirks smuggly***',
+        '***pounces on your buldge***',
+        '***breaks into your house and aliases neofetch to rm -rf --no-preserve-root /***',
     ]
 
     __exclamations = [
