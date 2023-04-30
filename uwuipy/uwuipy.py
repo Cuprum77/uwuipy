@@ -140,7 +140,7 @@ class uwuipy:
             if re.search(r'((http:|https:)//[^ \<]*[^ \<\.])', word):
                 continue
             # skip pings
-            if word[0] == '@':
+            if word[0] == '@' or word[0] == '#' or word[0] == ':' or word[0] == '<':
                 continue
             # for each pattern in the array
             for pattern, substitution in self.__uwu_pattern:
@@ -161,6 +161,9 @@ class uwuipy:
         for idx, word in enumerate(words):
             # skip empty entries
             if not word:
+                continue
+            # skip pings
+            if word[0] == '@' or word[0] == '#' or word[0] == ':' or word[0] == '<':
                 continue
             
             # get the character case for the second letter in the word
