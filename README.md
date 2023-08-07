@@ -36,15 +36,16 @@ The constructor accepts several optional parameters:
 * facechance
 * actionchance
 * exclamationchance
+* nsfw_actions
 
 the seed sets the rng seed for the random events, and the values for the parameters (range is between 0 and 1.0) control the probability of them occuring.
 ```python
 from uwuipy import uwuipy
 
-uwu = uwuipy(None, 0.3, 0.3, 0.3, 1)
+uwu = uwuipy(None, 0.3, 0.3, 0.3, 1, False)
 print(uwu.uwuify(input()))
 ```
-Usage of the above example:
+Sample output of the above example:
 ```
 The quick brown fox jumps over the lazy dog
 The quick b-b-b-bwown (・\`ω\´・) ***screeches*** fox jumps uvw t-t-t-the OwO wazy dog
