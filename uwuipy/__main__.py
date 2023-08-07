@@ -56,6 +56,14 @@ def main():
         help="The chance of replacing ! with an exclamation. [default: 1]",
     )
 
+    parser.add_argument(
+        "-n",
+        "--nsfwactions",
+        default=False,
+        action="store_true",
+        help="Enable NFSW actions. [default: False]"
+    )
+
     parser.add_argument("message", nargs=argparse.REMAINDER, help="The text to uwuify")
     args = parser.parse_args()
 
@@ -65,6 +73,7 @@ def main():
         args.facechance,
         args.actionchance,
         args.exclamationchance,
+        args.nsfwactions
     )
 
     if len(args.message):
