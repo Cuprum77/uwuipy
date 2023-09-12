@@ -4,6 +4,7 @@ import random
 
 class uwuipy:
     __uwu_pattern = [
+        (r"^sleep", "eep"),  # sleeping -> eeping (later eepin)
         (r"[rl]", "w"),
         (r"[RL]", "W"),
         (r"n([aeiou])", r"ny\g<1>"),
@@ -11,6 +12,10 @@ class uwuipy:
         (r"N([AEIOU])", r"NY\g<1>"),
         (r"ove", "uv"),
         (r"pog", "poggies"),
+        (r"ng", "n"),  # ing -> in
+        (r"oh", "owh"),
+        (r"on", "own"),
+        (r"an", "awn"),
     ]
 
     __actions = [
