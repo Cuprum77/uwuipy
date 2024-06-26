@@ -1,5 +1,7 @@
 import re
 import random
+from typing import Union
+import unicodedata
 
 
 class uwuipy:
@@ -107,11 +109,12 @@ class uwuipy:
         "(ᴜ‿ᴜ✿)",
         "~(˘▾˘~)",
         "(｡ᴜ‿‿ᴜ｡)",
+        ">/////<",
     ]
 
     def __init__(
         self,
-        seed: int | None = None,
+        seed: Union[int, None] = None,
         stutter_chance: float = 0.1,
         face_chance: float = 0.05,
         action_chance: float = 0.075,
@@ -180,30 +183,18 @@ class uwuipy:
             # skip empty entries
             if not word:
                 continue
-            # skip pings
-            if word[0] == "@" or word[0] == "#" or word[0] == ":" or word[0] == "<":
+            # S-s-s-skip nyon wettews, to avoid ( ᵘ ꒳ ᵘ ✼) s-s-s-stuttews like: /-/-///
+            # This checks if the chaw is a wettew
+            if not unicodedata.category(word[0]).lower().startswith("l"):
                 continue
 
-            # get the character case for the second letter in the word
-            next_char_case = word[1].isupper() if len(word) > 1 else False
-            _word = ""
+            stutter = ""
 
-            # if we are to add stutters, do it
             if random.random() <= self._stutter_chance:
-                # creates a random number between 1 and 2
-                stutter_len = random.randrange(1, 3)
-                # add as many characters to the stutter as stutter_len dictates
-                for j in range(stutter_len + 1):
-                    _word += (
-                        word[0]
-                        if j == 0
-                        else (word[0].upper() if next_char_case else word[0].lower())
-                    ) + "-"
-
-                # add in the whole word, but make sure the case matches the next rest of the word
-                _word += (
-                    word[0].upper() if next_char_case else word[0].lower()
-                ) + word[1:]
+                # Adds a l- from 1 up to 3 times
+                stutter += "".join([f"{word[0]}-" for _ in range(random.randint(1, 3))])
+            # Then we join e.g. e-e-e + e + rest_of_the_word
+            _word = stutter + word[0] + word[1:]
 
             # if we are to add a face, do it
             if random.random() <= self._face_chance:
