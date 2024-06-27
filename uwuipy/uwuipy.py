@@ -1,18 +1,44 @@
+from __future__ import annotations
+
 import re
 import random
-from typing import Union
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Union
+
 import unicodedata
 
 
-class uwuipy:
-    __uwu_pattern = [
-        (r"[rl]", "w"),
-        (r"[RL]", "W"),
-        (r"n([aeiou])", r"ny\g<1>"),
-        (r"N([aeiou])", r"Ny\g<1>"),
-        (r"N([AEIOU])", r"NY\g<1>"),
-        (r"ove", "uv"),
-        (r"pog", "poggies"),
+URI_REGEX = r"(?:[a-zA-Z]+:)+/*(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
+
+
+class Uwuipy:
+    """
+    :param power: an integer from 1 to 4 that controls how strong uwuification is. (the exact transformations applied are in :py:attr:`__uwu_patterns`)
+    """
+
+    # Uwuification level = index + 1
+    __uwu_patterns: list[list[tuple[str, str]]] = [
+        [
+            (r"[rl]", r"w"),
+            (r"[RL]", r"W"),
+        ],
+        [
+            (r"([nj])([aeiou])", r"\g<1>y\g<2>"),
+            (r"([NJ])([aeiou])", r"\g<1>y\g<2>"),
+            (r"([NJ])([AEIOU])", r"\g<1>Y\g<2>"),
+        ],
+        [
+            (r"ove", r"uv"),
+            (r"v([aeiouAEIUO])", r"w\g<1>"),
+        ],
+        [
+            (r"ose", r"owse"),
+            (r"([Oo])h", r"\g<1>wh"),
+            (r"([Oo])n", r"\g<1>wn"),
+            (r"([Aa])n", r"\g<1>wn"),
+        ],
     ]
 
     __actions = [
@@ -34,11 +60,10 @@ class uwuipy:
         "***glomps and huggles***",
         "***glomps***",
         "***looks around suspiciously***",
-        "***smirks smuggly***",
-        "***breaks into your house and aliases neofetch to rm -rf --no-preserve-root /***",
+        "***smirks smugly***",
     ]
 
-    # Because I got annoyed at them not being toggleable.
+    # Because Kazani got annoyed at not being able to disable them.
     __nsfw_actions = [
         "***twerks***",  # arguably nsfw
         "***sees bulge***",
@@ -48,14 +73,24 @@ class uwuipy:
         "***pounces on your buldge***",
     ]
 
-    __exclamations = [
-        "!?",
-        "?!!",
-        "?!?1",
-        "!!11",
-        "!!1!",
-        "?!?!",
-    ]
+    __exclamations = {
+        "!": [
+            "!",
+            "!!",
+            "!!!",
+            "!!11",
+            "!!1!",
+        ],
+        "?": [
+            "?",
+            "??",
+            "???",
+            "!?",
+            "?!!",
+            "?!?1",
+            "?!?!",
+        ],
+    }
 
     __faces = [
         r"(・\`ω\´・)",
@@ -120,26 +155,30 @@ class uwuipy:
         action_chance: float = 0.075,
         exclamation_chance: float = 1,
         nsfw_actions: bool = False,
+        power: int = 3,  # 4 is a little too much to make the default.
     ):
         # input protection to make sure the user stays within allowed parameters
-        if not 0.0 <= stutter_chance <= 1.0:
-            raise ValueError(
-                "Invalid input value for stutterChance, supported range is 0-1.0"
-            )
-        if not 0.0 <= face_chance <= 1.0:
-            raise ValueError(
-                "Invalid input value for faceChance, supported range is 0-1.0"
-            )
-        if not 0.0 <= action_chance <= 1.0:
-            raise ValueError(
-                "Invalid input value for actionChance, supported range is 0-1.0"
-            )
-        if not 0.0 <= exclamation_chance <= 1.0:
-            raise ValueError(
-                "Invalid input value for exclamationChance, supported range is 0-1.0"
-            )
+
+        for name in [
+            "stutter_chance",
+            "face_chance",
+            "action_chance",
+            "exclamation_chance",
+        ]:
+            if not 0.0 <= locals()[name] <= 1.0:
+                raise ValueError(
+                    f"`{name}` must be a float between 0.0 and 1.0 (inclusive)"
+                )
+
+        if not 1 <= power <= 4:
+            raise ValueError("`power` must be between 1 and 4 (inclusive)")
 
         random.seed(seed)
+        self._uwu_patterns = self.__uwu_patterns[0]
+
+        for level in range(1, power):
+            self._uwu_patterns.extend(self.__uwu_patterns[level])
+
         self._stutter_chance = stutter_chance
         self._face_chance = face_chance
         self._action_chance = action_chance
@@ -157,14 +196,20 @@ class uwuipy:
             # skip empty entries
             if not word:
                 continue
-            # skip URLs
-            if re.search(r"((http:|https:)//[^ \<]*[^ \<\.])", word):
+
+            # skip URIs and URNs
+            if re.search(
+                URI_REGEX,
+                word,
+            ):
                 continue
+
             # skip pings
             if word[0] == "@" or word[0] == "#" or word[0] == ":" or word[0] == "<":
                 continue
+
             # for each pattern in the array
-            for pattern, substitution in self.__uwu_pattern:
+            for pattern, substitution in self._uwu_patterns:
                 # attempt to use the pattern on the word
                 word = re.sub(pattern, substitution, word)
 
@@ -183,6 +228,14 @@ class uwuipy:
             # skip empty entries
             if not word:
                 continue
+
+            # skip URIs and URNs
+            if re.search(
+                URI_REGEX,
+                word,
+            ):
+                continue
+
             # S-s-s-skip nyon wettews, to avoid ( ᵘ ꒳ ᵘ ✼) s-s-s-stuttews like: /-/-///
             # This checks if the chaw is a wettew
             if not unicodedata.category(word[0]).lower().startswith("l"):
@@ -193,6 +246,7 @@ class uwuipy:
             if random.random() <= self._stutter_chance:
                 # Adds a l- from 1 up to 3 times
                 stutter += "".join([f"{word[0]}-" for _ in range(random.randint(1, 3))])
+
             # Then we join e.g. e-e-e + e + rest_of_the_word
             _word = stutter + word[0] + word[1:]
 
@@ -226,6 +280,7 @@ class uwuipy:
             # skip empty entries
             if not word:
                 continue
+
             # skip if an exclamation is not present or the random number is greater than the chance
             if (
                 not re.search(r"[?!]+$", word)
@@ -233,7 +288,13 @@ class uwuipy:
                 continue
 
             # strip the exclamation from the word, add new exclamations and return it to the words array
-            word = re.sub(r"[?!]+$", "", word) + random.choice(self.__exclamations)
+            word = re.sub(
+                r"([?!]+)$",
+                lambda mtch: random.choice(
+                    self.__exclamations["?" if "?" in mtch[1] else "!"]
+                ),
+                word,
+            )
             words[idx] = word
 
         # return the joined string

@@ -2,5 +2,7 @@ uwuipy/__pycache__
 uwuipy.egg-info/
 dist/
 build/
-uwuipy.egg-info/
 .idea
+poetry.lock
+.vscode
+__pycache__
