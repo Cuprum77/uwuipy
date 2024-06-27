@@ -21,9 +21,9 @@ To install just use PyPI `pip install uwuipy`
 ### As a library
 Integrate `uwuipy` into your Python application to transform ordinary text into playful uwu-styled expressions. Here's a basic example of how to use it:
 ```python
-from uwuipy import uwuipy
+from uwuipy import Uwuipy
 
-uwu = uwuipy()
+uwu = Uwuipy()
 print(uwu.uwuify(input()))
 ```
 
