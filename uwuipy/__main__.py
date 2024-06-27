@@ -1,4 +1,4 @@
-from uwuipy import uwuipy
+from uwuipy import Uwuipy
 from os import getenv
 import argparse
 
@@ -61,19 +61,28 @@ def main():
         "--nsfwactions",
         default=False,
         action="store_true",
-        help="Enable NFSW actions. [default: False]"
+        help="Enable NFSW actions. [default: False]",
+    )
+
+    parser.add_argument(
+        "-p",
+        "--power",
+        default=3,
+        type=int,
+        help="The uwuification strength. [default: 3 — max is 4]",
     )
 
     parser.add_argument("message", nargs=argparse.REMAINDER, help="The text to uwuify")
     args = parser.parse_args()
 
-    uwu = uwuipy(
+    uwu = Uwuipy(
         args.seed,
         args.stutterchance,
         args.facechance,
         args.actionchance,
         args.exclamationchance,
-        args.nsfwactions
+        args.nsfwactions,
+        args.power,
     )
 
     if len(args.message):
