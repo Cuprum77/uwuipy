@@ -1,1 +1,1 @@
-from .uwuipy import Uwuipy as Uwuipy, Uwuipy
+from .uwuipy import Uwuipy as uwuipy, Uwuipy
