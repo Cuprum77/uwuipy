@@ -10,6 +10,7 @@ The library provides control over various aspects of the uwuification process, i
 - Customizable: Tailor the uwuification process to your needs with adjustable parameters.
 - CLI Support: Use the tool directly from the command line or integrate it into Python applications.
 - Entertainment: A unique way to engage users with lively and animated text transformations.
+- Robust Input Handling: `uwuify_segmented` provides advanced handling of various text segments, allowing the application to choose which parts of the text to uwuify while leaving others unchanged.
 
 ## Requirements
 * Python 3.10 or higher
@@ -53,6 +54,29 @@ The quick bwown (ᵘʷᵘ) ***glomps*** f-f-fox jyumps uvw the ***screeches*** w
 The (ᵘﻌᵘ) quick bwown ***smirks smugly*** fox \>w\< ***screeches*** jyumps uvw t-t-t-the (uwu) wazy owo dog ~(˘▾˘~)
 The q-q-q-quick ***nuzzles your necky wecky*** b-b-bwown f-f-fox ( ᵘ ꒳ ᵘ ✼) j-j-jyumps (U ﹏ U) u-uvw ***whispers to self*** the owo w-w-w-wazy Uwu d-d-d-dog ***huggles tightly***
 ```
+#### Segmented Uwuification:
+For more advanced use cases, `uwuipy` provides the `uwuify_segmented()` method. This function intelligently processes text segments, allowing for selective uwuification while preserving certain parts of the text. Here's how to use it:
+```python
+from uwuipy import Uwuipy
+
+uwu = Uwuipy(1, 0.3, 0.3, 0.3, 1)
+text = "Hello @everyone! Check out https://example.com and http://test.io/page?arg=1 yeah! Also, say hi to <@123456789012345678> and <@!987654321098765432>, they’re in <#112233445566778899> with role <@&998877665544332211>."
+
+print(uwu.uwuify_segmented(text))
+```
+
+Output:
+```
+[('Hello', 'H-Hewwo', False), (' ', ' ', False), ... ('https://example.com', 'https://example.com', False), ... (None, 'to', False), (None, ' ', False), ('<@123456789012345678>', '<@123456789012345678>', True), ... ('<@!987654321098765432>', '<@!987654321098765432>', True), ... (None, ' ', False), ('<#112233445566778899>', '<#112233445566778899>', True), (' ', ' ', False), ('with', 'with', False), (' ', ' ', False), ('role', '***huggles', False), (' ', ' ', False), ('', 'tightly***', False), (None, ' ', False), (None, 'wowe', False), (None, ' ', False), ('<@&998877665544332211>', '<@&998877665544332211>', True), ('.', '.', False)]
+```
+The usecase for this is for checking if a user is trying to bypass uwuification by using mentions, URLs, or emojis. The third element in each tuple indicates whether the application should double check if the segment is a legit role, emoji, mention, or URL. And if not it can take the uwuified version instead.
+
+`uwuify_segmented` has some optional parameters in which you can disable this reporting for some things like URLs or mentions/channel/role IDs and emojis. If set to false then the elements will never be uwuified and always marked as not needing verification.
+- `verify_urls`: If ``True``, URL-like tokens are marked as special and require caller verification. If ``False``, URLs are left untouched and not marked as special. Defaults to ``False``.
+- `verify_men_chan_role`: If ``True``, Discord mentions (``<@123>``), channels (``<#123>``), and roles (``<@&123>``) are marked as special tokens. If ``False``, they are preserved automatically. Defaults to ``True``.
+- `verify_emojis`: If ``True``, both custom Discord emojis (``<:name:id>``, ``<a:name:id>``) and plain-text emoji syntax (``:name:``) are marked as special tokens. If ``False``, they are left untouched and not marked as special. Defaults to ``True``.
+
+If something extra is inserted like an action or face, it will mark the original as `''` or `None` in the first element of the tuple.
 
 #### Time-Based Seeding:
 Utilize time-based seeding for unique transformations:
