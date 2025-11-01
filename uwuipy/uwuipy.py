@@ -12,6 +12,15 @@ import unicodedata
 
 URI_REGEX = r"(?:[a-zA-Z]+:)+/*(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
 
+SPECIAL_TOKEN_REGEX = re.compile(
+    r"(@everyone|@here)|"          # global mentions
+    r"(<a?:[a-zA-Z0-9_]+:\d+>)|"   # real Discord emoji <a:name:id>
+    r"(:[a-zA-Z0-9_]+:)|"          # potential plain emoji :name:
+    r"(<[@#!][^>]+>)|"             # mentions/channels/roles <@123>, <#123>
+    + URI_REGEX                    # URLs
+)
+
+SPACE_TOKENIZER = re.compile(r"(\s+)")
 
 class Uwuipy:
     """
@@ -185,7 +194,7 @@ class Uwuipy:
         self._exclamation_chance = exclamation_chance
         self._nsfw_actions = nsfw_actions
 
-    def _uwuify_words(self, _msg):
+    def _uwuify_words(self, _msg, skip_urls=True):
         # split the message into words
         words = _msg.split(" ")
 
@@ -198,15 +207,16 @@ class Uwuipy:
                 continue
 
             # skip URIs and URNs
-            if re.search(
+            if skip_urls and re.search(
                 URI_REGEX,
                 word,
             ):
                 continue
 
+            # use the uwuify_segmented method instead for better handling of special tokens
             # skip pings
-            if word[0] == "@" or word[0] == "#" or word[0] == ":" or word[0] == "<":
-                continue
+            # if word[0] == "@" or word[0] == "#" or word[0] == ":" or word[0] == "<":
+            #     continue
 
             # for each pattern in the array
             for pattern, substitution in self._uwu_patterns:
@@ -299,9 +309,129 @@ class Uwuipy:
 
         # return the joined string
         return " ".join(words)
+    
+    def uwuify_segmented(
+        self,
+        msg: str,
+        verify_urls: bool = False,
+        verify_men_chan_role: bool = True,
+        verify_emojis: bool = True,
+    ) -> list[tuple[str | None, str | None, bool]]:
+        """
+        Uwuifies a message while preserving or marking special tokens such as URLs,
+        mentions, channels, roles, and emojis.
 
-    def uwuify(self, msg):
-        msg = self._uwuify_words(msg)
+        This method scans the input string, identifies special Discord-style tokens
+        (for example ``https://...``, ``<@123>``, or ``:emoji_name:``), and returns
+        each text segment alongside its uwuified version. The caller can then decide,
+        based on the boolean flags, whether to keep the original segment (for real
+        mentions or emojis) or use the uwuified one.
+
+        :param msg:  
+            The message text to uwuify.
+
+        :param verify_urls:  
+            If ``True``, URL-like tokens are marked as special and require caller
+            verification. If ``False``, URLs are left untouched and not marked as
+            special. Defaults to ``False``.
+
+        :param verify_men_chan_role:  
+            If ``True``, Discord mentions (``<@123>``), channels (``<#123>``),
+            and roles (``<@&123>``) are marked as special tokens.
+            If ``False``, they are preserved automatically. Defaults to ``True``.
+
+        :param verify_emojis:  
+            If ``True``, both custom Discord emojis (``<:name:id>``, ``<a:name:id>``)
+            and plain-text emoji syntax (``:name:``) are marked as special tokens.
+            If ``False``, they are left untouched and not marked as special.
+            Defaults to ``True``.
+
+        :returns:  
+            A list of tuples in the format ``(original_segment, uwuified_segment, is_special_token)``
+
+            * **original_segment** – The exact text from the input, or ``None`` if the uwuified
+              output inserted new content (e.g., actions or faces).
+            * **uwuified_segment** – The uwuified version of that text.
+            * **is_special_token** – ``True`` if this segment might represent a URL,
+              emoji, mention, etc. The caller can verify and choose which version to use.
+        """
+        SPACE_TOKENIZER = re.compile(r"(\s+)")  # capture and preserve spaces
+        result = []
+        last_end = 0
+
+        for match in SPECIAL_TOKEN_REGEX.finditer(msg):
+            start, end = match.span()
+            token = msg[start:end]
+
+            # Handle preceding normal text
+            if start > last_end:
+                chunk = msg[last_end:start]
+
+                # Fully uwuify before tokenizing spaces
+                uwuified_chunk = self._uwuify_exclamations(
+                    self._uwuify_spaces(self._uwuify_words(chunk))
+                )
+
+                # Split both into atomic tokens (spaces + words)
+                orig_parts = SPACE_TOKENIZER.split(chunk)
+                uwu_parts = SPACE_TOKENIZER.split(uwuified_chunk)
+
+                # Merge keeping inserts from uwuified version
+                max_len = max(len(orig_parts), len(uwu_parts))
+                for i in range(max_len):
+                    o = orig_parts[i] if i < len(orig_parts) else None
+                    u = uwu_parts[i] if i < len(uwu_parts) else None
+                    if not o and not u:
+                        continue
+                    result.append((o, u, False))
+
+            # Identify token type
+            is_url = bool(re.match(URI_REGEX, token))
+            is_men_chan_role = (
+                bool(re.match(r"^<[@#!][^>]+>$", token))
+                or token in {"@everyone", "@here"}
+            )
+            is_emoji = bool(re.match(r"^<a?:[a-zA-Z0-9_]+:\d+>$", token)) or bool(
+                re.match(r"^:[a-zA-Z0-9_]+:$", token)
+            )
+
+            # Decide how to handle based on flags
+            if (is_url and not verify_urls) or \
+               (is_men_chan_role and not verify_men_chan_role) or \
+               (is_emoji and not verify_emojis):
+                # Automatically handled — no verification needed
+                result.append((token, token, False))
+            else:
+                # Needs verification — uwuify for comparison
+                uwu_token = self._uwuify_exclamations(
+                    self._uwuify_spaces(self._uwuify_words(token))
+                )
+                result.append((token, uwu_token, True))
+
+            last_end = end
+
+        # Handle trailing text
+        if last_end < len(msg):
+            chunk = msg[last_end:]
+            uwuified_chunk = self._uwuify_exclamations(
+                self._uwuify_spaces(self._uwuify_words(chunk))
+            )
+
+            orig_parts = SPACE_TOKENIZER.split(chunk)
+            uwu_parts = SPACE_TOKENIZER.split(uwuified_chunk)
+
+            max_len = max(len(orig_parts), len(uwu_parts))
+            for i in range(max_len):
+                o = orig_parts[i] if i < len(orig_parts) else None
+                u = uwu_parts[i] if i < len(uwu_parts) else None
+                if not o and not u:
+                    continue
+                result.append((o, u, False))
+
+        return result
+
+    def uwuify(self, msg, skip_urls=True) -> str:
+        msg = self._uwuify_words(msg, skip_urls=skip_urls)
         msg = self._uwuify_spaces(msg)
         msg = self._uwuify_exclamations(msg)
 
