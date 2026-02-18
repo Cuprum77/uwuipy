@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "uwuipy"
-version = "0.2.10"
+version = "1.0.0"
 description = "Allows the easy implementation of uwuifying words for applications like Discord bots and websites"
 authors = ["Cuprum77", "diminDDL", "R2Boyo25", "ThatRedKite", "pin-lee", "BadlyWrittenStylesheet"]
 license = "MIT"
