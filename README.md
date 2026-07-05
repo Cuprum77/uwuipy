@@ -32,10 +32,10 @@ print(uwu.uwuify(input()))
 The `Uwuipy` constructor allows fine-tuning of the uwuification process through the following parameters:
 
 - `seed`: An integer seed for the random number generator. Defaults to current time if - not provided.
-- `stutterchance`: Probability of stuttering a word (0 to 1.0), default 0.1.
-- `facechance`: Probability of adding a face (0 to 1.0), default 0.05.
-- `actionchance`: Probability of adding an action (0 to 1.0), default 0.075.
-- `exclamationchance`: Probability of adding exclamations (0 to 1.0), default 1.
+- `stutter_chance`: Probability of stuttering a word (0 to 1.0), default 0.1.
+- `face_chance`: Probability of adding a face (0 to 1.0), default 0.05.
+- `action_chance`: Probability of adding an action (0 to 1.0), default 0.075.
+- `exclamation_chance`: Probability of adding exclamations (0 to 1.0), default 1.
 - `nsfw_actions`: Enables more "explicit" actions if set to true; default is false.
 - `power`: The uwuification "level" — higher levels lead to more text transformations being done (1 is core uwu, 2 is nyaification, 3 and 4 are just extra). Using a higher level includes the lower levels.
 
